@@ -1,10 +1,13 @@
 name: Merchsloth Post Reminder
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # Allows manual triggering
+  schedule:
+    - cron: '0 6 * * 0'  # Runs every Sunday at 7 AM (GMT+1)
+    - cron: '0 6 * * 3'  # Runs every Wednesday at 7 AM (GMT+1)
 
 permissions:
-  contents: write  # Allows the workflow to push changes
+  contents: write  # Allows workflow to push changes
 
 jobs:
   check-post-date:
@@ -31,7 +34,7 @@ jobs:
         run: python merchsloth/check_post.py
 
       - name: Commit and push if CSV was updated
-        if: always()  # Ensures this step runs even if "Check latest post date" fails
+        if: always()  # Ensures this step runs even if the previous step fails
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
