@@ -2,9 +2,9 @@ name: Merchsloth Post Reminder
 
 on:
   workflow_dispatch:  # Allows manual triggering
-  # schedule:
-  #   - cron: '0 6 * * 0'  # Runs every Sunday at 7 AM (GMT+1)
-  #   - cron: '0 6 * * 3'  # Runs every Wednesday at 7 AM (GMT+1)
+  schedule:
+    - cron: '0 6 * * 0'  # Runs every Sunday at 7 AM (GMT+1)
+    - cron: '0 6 * * 3'  # Runs every Wednesday at 7 AM (GMT+1)
 
 permissions:
   contents: write  # Allows workflow to push changes
