@@ -36,7 +36,7 @@ if latest_date != today:
     df.to_csv(csv_path, index=False)
     
     print(f"::error::Make a post for Merchsloth for {today.strftime('%Y-%m-%d')}")
-    sys.exit(0)  # Fail the action
+    sys.exit(1)  # Fail the action
 else:
     print("Latest post date is up to date.")
     sys.exit(0)
