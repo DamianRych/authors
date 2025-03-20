@@ -1,0 +1,43 @@
+name: Merchsloth Post Reminder
+
+on:
+  workflow_dispatch:  # Allows manual triggering
+  schedule:
+    - cron: '0 6 * * 0'  # Runs every Sunday at 7 AM (GMT+1)
+    - cron: '0 6 * * 3'  # Runs every Wednesday at 7 AM (GMT+1)
+
+permissions:
+  contents: write  # Allows workflow to push changes
+
+jobs:
+  check-post-date:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Ensures authenticated access
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas
+
+      - name: Check latest post date
+        id: check-date
+        run: python merchsloth/check_post.py
+
+      - name: Commit and push if CSV was updated
+        if: always()  # Ensures this step runs even if the previous step fails
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add merchsloth/post_dates.csv
+          git commit -m "Update post_dates.csv with today's date" || echo "No changes to commit"
+          git push
