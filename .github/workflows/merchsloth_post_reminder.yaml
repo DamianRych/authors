@@ -1,0 +1,56 @@
+name: Merchsloth Post Reminder
+
+# on:
+#   schedule:
+#     - cron: '0 0 * * *'  # Runs daily at midnight
+
+on:
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  check-post-date:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas
+
+    - name: Check latest post date
+      id: check-date
+      run: |
+        import pandas as pd
+        from datetime import datetime
+        import sys
+
+        # Load the CSV file
+        df = pd.read_csv('merchsloth/post_dates.csv')
+
+        # Get the latest date from the CSV
+        latest_date = pd.to_datetime(df.iloc[-1, 0])
+
+        # Get today's date
+        today = datetime.today().date()
+
+        if latest_date.date() != today:
+            # Append today's date to the CSV
+            df.loc[len(df)] = [today.strftime('%Y-%m-%d')]
+            df.to_csv('merchsloth/post_dates.csv', index=False)
+            print(f"::error::Make a post for Merchsloth for {today.strftime('%Y-%m-%d')}")
+            sys.exit(1)  # Fail the action with an error message
+        else:
+            print(f"Latest post date is up to date.")
+
+    - name: Notify failure
+      if: failure()
+      run: |
+        echo "Action failed because no post was made for today."
