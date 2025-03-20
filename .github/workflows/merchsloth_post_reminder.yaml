@@ -3,13 +3,18 @@ name: Merchsloth Post Reminder
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write  # Allows the workflow to push changes
+
 jobs:
   check-post-date:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Ensures authenticated access
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -26,6 +31,7 @@ jobs:
         run: python merchsloth/check_post.py
 
       - name: Commit and push if CSV was updated
+        if: always()  # Ensures this step runs even if "Check latest post date" fails
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
