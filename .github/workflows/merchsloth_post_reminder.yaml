@@ -1,4 +1,8 @@
-name: Merchant Post Reminder
+name: Merchsloth Post Reminder
+
+# on:
+#   schedule:
+#     - cron: '0 0 * * *'  # Runs daily at midnight
 
 on:
   workflow_dispatch:  # Allows manual triggering of the workflow
@@ -23,7 +27,7 @@ jobs:
 
     - name: Check latest post date
       id: check-date
-      run: python -c '
+       run: python -c '
         import pandas as pd
         from datetime import datetime
         import sys
