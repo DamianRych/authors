@@ -27,28 +27,29 @@ jobs:
 
     - name: Check latest post date
       id: check-date
-      run: |
+      run: python -c '
         import pandas as pd
         from datetime import datetime
         import sys
 
         # Load the CSV file
-        df = pd.read_csv('merchsloth/post_dates.csv')
+        df = pd.read_csv("merchsloth/post_dates.csv")
 
         # Get the latest date from the CSV
         latest_date = pd.to_datetime(df.iloc[-1, 0])
 
-        # Get today's date
+        # Get today''s date
         today = datetime.today().date()
 
         if latest_date.date() != today:
-            # Append today's date to the CSV
-            df.loc[len(df)] = [today.strftime('%Y-%m-%d')]
-            df.to_csv('merchsloth/post_dates.csv', index=False)
-            print(f"::error::Make a post for Merchsloth for {today.strftime('%Y-%m-%d')}")
+            # Append today''s date to the CSV
+            df.loc[len(df)] = [today.strftime("%Y-%m-%d")]
+            df.to_csv("merchsloth/post_dates.csv", index=False)
+            print(f"::error::Make a post for Merchsloth for {today.strftime("%Y-%m-%d")}")
             sys.exit(1)  # Fail the action with an error message
         else:
-            print(f"Latest post date is up to date.")
+            print("Latest post date is up to date.")
+      '
 
     - name: Notify failure
       if: failure()
