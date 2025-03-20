@@ -25,6 +25,10 @@ jobs:
         id: check-date
         run: python merchsloth/check_post.py
 
-      - name: Notify failure
-        if: failure()
-        run: echo "Action failed because no post was made for today."
+      - name: Commit and push if CSV was updated
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add merchsloth/post_dates.csv
+          git commit -m "Update post_dates.csv with today's date" || echo "No changes to commit"
+          git push
