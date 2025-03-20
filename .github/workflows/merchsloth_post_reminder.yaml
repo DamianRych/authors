@@ -1,8 +1,4 @@
-name: Merchsloth Post Reminder
-
-# on:
-#   schedule:
-#     - cron: '0 0 * * *'  # Runs daily at midnight
+name: Merchant Post Reminder
 
 on:
   workflow_dispatch:  # Allows manual triggering of the workflow
